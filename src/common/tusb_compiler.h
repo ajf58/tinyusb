@@ -239,6 +239,32 @@
   #define TU_BSWAP16(u16) ((unsigned short)_builtin_revw((unsigned long)u16))
   #define TU_BSWAP32(u32) (_builtin_revl(u32))
 
+#elif defined(_MSC_VER)
+#define TU_ATTR_ALIGNED(Bytes)        __declspec(align(Bytes))
+#define TU_ATTR_SECTION(sec_name)     __declspec(code_seg(#sec_name))
+#define TU_ATTR_PACKED                //__attribute__ ((packed))
+#define TU_ATTR_WEAK                  //__attribute__ ((weak))
+#define TU_ATTR_ALWAYS_INLINE         //__attribute__ ((always_inline))
+#define TU_ATTR_DEPRECATED(mess)      __declspec(deprecated(mess)) // warn if function with this attribute is used
+#define TU_ATTR_UNUSED                //__attribute__ ((unused))           // Function/Variable is meant to be possibly unused
+#define TU_ATTR_USED                  //__attribute__ ((used))             // Function/Variable is meant to be used
+
+#define TU_ATTR_PACKED_BEGIN
+#define TU_ATTR_PACKED_END
+#define TU_ATTR_BIT_FIELD_ORDER_BEGIN
+#define TU_ATTR_BIT_FIELD_ORDER_END
+
+#define TU_ATTR_FALLTHROUGH         do {} while (0)  /* fallthrough */
+
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#define TU_BYTE_ORDER TU_LITTLE_ENDIAN
+#else
+#define TU_BYTE_ORDER TU_BIG_ENDIAN
+#endif
+
+#define TU_BSWAP16(u16) (_byteswap_ushort(u16))
+#define TU_BSWAP32(u32) (_byteswap_ulong(u32))
+
 #else
   #error "Compiler attribute porting is required"
 #endif
